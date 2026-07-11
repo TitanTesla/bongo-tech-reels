@@ -1,0 +1,22 @@
+# Normalize line endings across machines.
+#
+# Everything is stored and checked out as LF — including on Windows — so
+# moving this repo between macOS and a Windows PC never rewrites files,
+# never triggers phantom "whole file changed" diffs, and Vite/Node stay
+# happy. Git handles this transparently; you don't have to configure
+# anything on the Windows side.
+* text=auto eol=lf
+
+# Binary assets — Git must never touch these
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary
+*.mp3   binary
+*.mp4   binary
