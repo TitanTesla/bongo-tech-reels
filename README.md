@@ -48,7 +48,7 @@ Ports: `mobile-app-dev-reel` → **5175**, `mixx-db-reel` → **5174**, `bolt-ds
 
 ## 🧰 Requirements
 
-- **Node.js 20 or newer** — [nodejs.org](https://nodejs.org) (the Windows installer includes npm and Git-friendly PATH setup)
+- **Node.js 20.19+ or 22.12+ (an LTS release)** — [nodejs.org](https://nodejs.org) (the Windows installer includes npm and Git-friendly PATH setup). ⚠️ Vite 8 requires these exact ranges: **odd/non-LTS lines such as Node 21.x will crash on startup** (`node:util` has no `styleText` export). Stick to an even LTS version — 22 LTS is recommended. Check with `node --version`.
 - **Git for Windows** — [git-scm.com](https://git-scm.com); during install, "Checkout as-is, commit as-is" is fine because `.gitattributes` already pins line endings to LF
 - **VS Code** — on first open it will suggest the recommended extensions (Tailwind CSS IntelliSense, Oxlint, ESLint)
 
@@ -57,6 +57,10 @@ Ports: `mobile-app-dev-reel` → **5175**, `mixx-db-reel` → **5174**, `bolt-ds
 - **Line endings** are normalized to LF via [`.gitattributes`](.gitattributes), so cloning on Windows won't rewrite every file or produce noisy diffs.
 - **`node_modules` and `dist` are not committed** — run `npm install` on the Windows side to build them fresh for your platform (native binaries differ between macOS and Windows).
 - If a clone ever complains about long paths, run once: `git config --global core.longpaths true`.
+
+## 🔁 Multi-machine workflow
+
+This project is cloned from GitHub but is not tied to a single computer. At any time it may be updated from **either a Windows machine or a Mac**, each authenticated to GitHub with its own SSH key. Development is done with **Claude Code running locally in separate instances** — sometimes on the Mac, sometimes on Windows — with all work pushed to and pulled from the **same GitHub repository under the same user account**. Whichever machine you sit down at, `git pull` first to get the latest, then push when done so the other machine stays in sync.
 
 ## 👤 Author
 
