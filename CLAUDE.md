@@ -37,12 +37,3 @@ Then open the URL in a browser to view it.
 ## Multi-machine workflow
 
 Developed from **both a Windows PC and a Mac**, each authenticated to GitHub with its own SSH key, using separate local Claude Code instances. Everything syncs through this one GitHub repo under the same account. **Always `git pull` at the start of a session and push when done** so the other machine stays current. Pushing is an outward action — confirm with the user before pushing.
-
-## Session handoff — pending tasks (remove this section once done)
-
-State as of the setup session (2026-07-12):
-
-1. **Node version** — the machine had Node 21.5.0, which is too old (see above). Verify `node --version` is now 20.19+/22.12+ before running anything; if not, ask the user to upgrade.
-2. **Run the DSA project** — `bolt-dsa-reel` deps are installed; start it (`npm run dev` in that folder) and open http://localhost:5173 in a browser to confirm it works. This was blocked purely by the Node version.
-3. **Commit & push docs** — `README.md` (added a "Multi-machine workflow" section + fixed the Node requirement) and this `CLAUDE.md` are new/modified and not yet committed. Confirm with the user, then commit and push to `origin/main`.
-4. **Clean up the old wrapper** — the original `Desktop/parent temporary repo` folder is now empty except for a leftover `.claude`. It could not be deleted by the setup session because it was that session's working directory. Ask the user to delete it (or delete it if working from elsewhere).
