@@ -1,28 +1,39 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { SCENES } from './scenes'
-import { BottomChrome, TopChrome } from './components/PhoneChrome'
 import { sfx } from './audio/sfx'
 
 const ACCENT = '#25d366'
 const TICK = '#53bdeb'
 
+// Record mode (?rec=1): canvas only, no UI, auto-advances through every
+// scene for one continuous 60s take. Capture it with an OBS *Browser
+// Source* at 2160×3840 — OBS renders the page at that exact resolution,
+// so the output is native 4K portrait with zero cropping or upscaling.
+// Optional params: ?rec=1&scene=3 (start scene) · &once=1 (no chaining).
+const params = new URLSearchParams(window.location.search)
+const REC = params.has('rec')
+const ONCE = params.has('once')
+const START = Math.min(SCENES.length - 1, Math.max(0, Number(params.get('scene') ?? 0) || 0))
+
 export default function App() {
-  const [active, setActive] = useState(0)
+  const [active, setActive] = useState(START)
   const [playing, setPlaying] = useState(false)
   const [line, setLine] = useState(0)
   const [muted, setMuted] = useState(() => sfx.muted)
 
-  const toggleMute = () => {
-    const m = !muted
-    sfx.setMuted(m)
-    setMuted(m)
-  }
+  const toggleMute = useCallback(() => {
+    setMuted((m) => {
+      sfx.setMuted(!m)
+      return !m
+    })
+  }, [])
 
   const tlRef = useRef<gsap.core.Timeline | null>(null)
   const lineRef = useRef(0)
   const progressRef = useRef<HTMLDivElement>(null)
   const timeRef = useRef<HTMLSpanElement>(null)
+  const frameRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef(active)
   activeRef.current = active
 
@@ -45,7 +56,14 @@ export default function App() {
         setLine(idx)
       }
     })
-    tl.eventCallback('onComplete', () => setPlaying(false))
+    tl.eventCallback('onComplete', () => {
+      // rec mode chains every scene into one continuous take
+      if (REC && !ONCE && activeRef.current < SCENES.length - 1) {
+        setActive(activeRef.current + 1)
+      } else {
+        setPlaying(false)
+      }
+    })
     tl.play()
     setPlaying(true)
   }, [])
@@ -55,7 +73,7 @@ export default function App() {
     if (progressRef.current) progressRef.current.style.width = '0%'
   }, [active])
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     const tl = tlRef.current
     if (!tl) return
     if (tl.progress() === 1) {
@@ -68,12 +86,44 @@ export default function App() {
       tl.pause()
       setPlaying(false)
     }
-  }
+  }, [])
 
-  const restart = () => {
+  const restart = useCallback(() => {
     tlRef.current?.restart()
     setPlaying(true)
-  }
+  }, [])
+
+  // keyboard transport — also reachable through OBS's "Interact" window
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === ' ') {
+        e.preventDefault()
+        toggle()
+      } else if (e.key === 'r' || e.key === 'R') {
+        restart()
+      } else if (e.key === 'm' || e.key === 'M') {
+        toggleMute()
+      } else if (e.key === 'ArrowRight') {
+        setActive((a) => Math.min(SCENES.length - 1, a + 1))
+      } else if (e.key === 'ArrowLeft') {
+        setActive((a) => Math.max(0, a - 1))
+      } else if (e.key === 'f' || e.key === 'F') {
+        frameRef.current?.requestFullscreen().catch(() => {})
+      } else if (e.key === 's' || e.key === 'S') {
+        const url = new URL(window.location.href)
+        url.search = REC ? '' : '?rec=1'
+        window.location.href = url.toString()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [toggle, restart, toggleMute])
+
+  useEffect(() => {
+    if (REC) {
+      document.title = 'REC · SPACE play · R restart · ←→ scene · M mute · S studio'
+    }
+  }, [])
 
   const seek = (e: React.MouseEvent<HTMLDivElement>) => {
     const tl = tlRef.current
@@ -97,6 +147,20 @@ export default function App() {
 
   const Scene = scene.Component
 
+  // ── record mode: the canvas and nothing else ──
+  if (REC) {
+    return (
+      <div ref={frameRef} className="flex h-screen w-screen items-center justify-center bg-black">
+        <div className="relative h-full max-w-full" style={{ aspectRatio: '9 / 16' }}>
+          {/* hard cuts between scenes — no crossfade in the recording */}
+          <div key={scene.id} className="absolute inset-0">
+            <Scene onReady={handleReady} />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex h-full flex-col overflow-hidden">
       {/* header */}
@@ -104,7 +168,20 @@ export default function App() {
         <h1 className="font-mono text-[12px] font-bold tracking-[0.3em] text-white">
           WHATSAPP <span style={{ color: ACCENT }}>×</span> <span style={{ color: TICK }}>APP DEV</span>
         </h1>
-        <p className="font-mono text-[10px] tracking-[0.2em] text-[#555]">REEL STUDIO · 60S · EP. 3</p>
+        <div className="flex items-center gap-4">
+          <p className="font-mono text-[10px] tracking-[0.2em] text-[#555]">REEL STUDIO · 60S · EP. 3</p>
+          <button
+            onClick={() => {
+              const url = new URL(window.location.href)
+              url.search = '?rec=1'
+              window.location.href = url.toString()
+            }}
+            className="rounded-full border border-[#2a2a2a] px-3 py-1 font-mono text-[10px] tracking-[0.2em] text-[#888] transition-colors hover:border-[#ff5c5c] hover:text-[#ff5c5c]"
+            title="Canvas-only capture view — point an OBS Browser Source at this URL @ 2160×3840"
+          >
+            ● REC MODE
+          </button>
+        </div>
       </header>
 
       <div className="flex min-h-0 flex-1">
@@ -138,44 +215,36 @@ export default function App() {
               GSAP · FRAMER MOTION
               <br />
               SVG · NO STOCK ASSETS
+              <br />
+              <br />
+              SPACE PLAY · R RESTART
+              <br />
+              ←→ SCENE · F FULLSCREEN
+              <br />
+              M MUTE · S REC MODE
             </p>
           </div>
         </nav>
 
-        {/* phone canvas */}
+        {/* canvas */}
         <main className="flex min-w-0 flex-1 flex-col items-center justify-center gap-4 p-4">
           <div
-            className="flex h-full max-h-[780px] w-auto max-w-full flex-col overflow-hidden rounded-[28px] border border-[#222] bg-black shadow-[0_0_60px_rgba(0,0,0,0.9)]"
+            ref={frameRef}
+            className="relative h-full max-h-[780px] w-auto max-w-full overflow-hidden rounded-[28px] border border-[#222] bg-black shadow-[0_0_60px_rgba(0,0,0,0.9)]"
             style={{ aspectRatio: '9 / 16' }}
           >
-            {/* top social chrome — breathing space */}
-            <div className="h-[8%] shrink-0">
-              <TopChrome />
-            </div>
-
-            {/* THE CANVAS — pure black, scenes render here */}
-            <div className="relative min-h-0 flex-1 bg-black">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={scene.id}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.18 }}
-                >
-                  <Scene onReady={handleReady} />
-                </motion.div>
-              </AnimatePresence>
-              {/* canvas bounds hint */}
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-[#1b1b1b]" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[#1b1b1b]" />
-            </div>
-
-            {/* bottom social chrome — breathing space */}
-            <div className="h-[14%] shrink-0">
-              <BottomChrome />
-            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={scene.id}
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.18 }}
+              >
+                <Scene onReady={handleReady} />
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* transport */}
