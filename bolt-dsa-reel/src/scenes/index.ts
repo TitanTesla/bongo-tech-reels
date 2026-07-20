@@ -1,94 +1,86 @@
 import type { SceneDef } from './types'
 import HookScene from './HookScene'
+import DsaScene from './DsaScene'
+import BigOScene from './BigOScene'
 import GraphScene from './GraphScene'
-import GridScene from './GridScene'
-import DijkstraScene from './DijkstraScene'
-import SortScene from './SortScene'
-import PayoffScene from './PayoffScene'
+import BruteScene from './BruteScene'
+import TeaseScene from './TeaseScene'
 
+// PART 1 — "Nyuma ya pazia" (8 script beats over exactly 60s).
 // VO script: modern Gen-Z Swahili/English code-switching, Dar es Salaam
-// setting. Niche tech terms (graph, spatial index, Dijkstra, sorting,
-// data structures, algorithms) stay in English on purpose.
+// setting. Niche tech terms (graph, Big O, data structures, algorithms,
+// spatial indexing) stay in English on purpose. Lines mirror the
+// "DSA reel script.md" Part 1 wording so the panel doubles as a VO sheet.
 export const SCENES: SceneDef[] = [
   {
     id: 'hook',
     tab: 'Hook',
-    title: '00 · Match ya sekunde mbili',
-    stamp: '0:00 – 0:06',
+    title: '00 · Nyuma ya pazia',
+    stamp: '0:00 – 0:10',
     Component: HookScene,
     lines: [
-      { t: 0, text: "Unafungua Bolt, una-tap 'Tafuta Ride.'" },
-      { t: 1.8, text: 'Sekunde mbili tu — dereva ame-lock-iwa.' },
-      { t: 4.4, text: 'Kati ya maelfu ya magari, bajaji na boda zinazo-move Dar nzima.' },
-      { t: 6.2, text: 'Vipi?! Sio uchawi. Ni data structures na algorithms.' },
+      { t: 0, text: 'Ushawahi kujiuliza pale unapo-request Bolt — nini kinatokea nyuma ya pazia?' },
+      { t: 4.5, text: 'Ndani ya sekunde mbili tu, dereva anapatikana eneo lako — kati ya maelfu Dar nzima.' },
+    ],
+  },
+  {
+    id: 'dsa',
+    tab: 'Siri = DSA',
+    title: '01 · Building blocks',
+    stamp: '0:10 – 0:22',
+    Component: DsaScene,
+    lines: [
+      { t: 0, text: 'Siri ni Data Structures and Algorithms — building blocks of programming.' },
+      { t: 3.8, text: 'Data structure — data ya aina gani, ikae vipi kwenye memory.' },
+      { t: 7.8, text: 'Algorithm — steps zipi zitatumika ku-process hizo data kwa muda mfupi na memory kidogo.' },
+    ],
+  },
+  {
+    id: 'bigo',
+    tab: 'Big O',
+    title: '02 · Kipimo cha ufanisi',
+    stamp: '0:22 – 0:32',
+    Component: BigOScene,
+    lines: [
+      { t: 0, text: 'Ufanisi wa algorithm unapimwa na Big O notation.' },
+      { t: 2.8, text: 'Inaonyesha jinsi muda na memory vinavyoongezeka kadri data inavyoongezeka.' },
+      { t: 6.4, text: 'Hii ndiyo inaamua algorithm inafaa au haifai kwa tatizo liliopo.' },
     ],
   },
   {
     id: 'graph',
     tab: 'Graph',
-    title: '01 · Dar ni graph',
-    stamp: '0:06 – 0:18',
+    title: '03 · Dar ni graph',
+    stamp: '0:32 – 0:42',
     Component: GraphScene,
     lines: [
-      { t: 0, text: 'Kwanza — Dar nzima ina-store-iwa kwenye system kama graph.' },
+      { t: 0, text: 'Mfano — mji kama Dar-es-Salaam unaweza kutumia data structure ya Graph.' },
       { t: 3.2, text: 'Dots ni makutano. Lines ni barabara.' },
-      { t: 5.6, text: 'Wewe ni dot moja. Dereva wako ni dot nyingine.' },
-      { t: 9.2, text: 'Kila DSA course inaanza na graphs — sasa unajua kwanini.' },
+      { t: 6.4, text: 'Wewe ni dot moja — dereva wako ni dot nyingine.' },
     ],
   },
   {
-    id: 'grid',
+    id: 'brute',
+    tab: 'Brute force',
+    title: '04 · Rahisi kifikra, gharama kubwa',
+    stamp: '0:42 – 0:53',
+    Component: BruteScene,
+    lines: [
+      { t: 0, text: 'Ku-check madereva wote Dar nzima mpaka umpate wa karibu — solution rahisi kifikra…' },
+      { t: 3.4, text: '…ila time na space complexity zitazidi kuwa kubwa kadri madereva wanavyoongezeka.' },
+      { t: 6.2, text: 'Badala ya sekunde mbili, kupata usafiri inaweza kuchukua dakika kadhaa.' },
+      { t: 8.2, text: 'Fikiria algorithm kama formula ya hesabu — tunataka formula fupi inayotupa jibu sahihi kwa haraka.' },
+    ],
+  },
+  {
+    id: 'tease',
     tab: 'Spatial index',
-    title: '02 · Tafuta kidogo, pata haraka',
-    stamp: '0:18 – 0:30',
-    Component: GridScene,
+    title: '05 · Karibu Part 2',
+    stamp: '0:53 – 1:00',
+    Component: TeaseScene,
     lines: [
-      { t: 0, text: 'Ku-check kila ride Dar nzima? Aisee, itachukua milele.' },
-      { t: 2.4, text: 'Kwa hiyo ramani inakatwa vipande — grid.' },
-      { t: 4.8, text: 'Cells za karibu yako tu ndizo zina-search-iwa.' },
-      { t: 7.0, text: 'Rides 10,000 zinakuwa 12 — ndani ya milliseconds.' },
-      { t: 9.6, text: 'Hiyo ndiyo kazi ya data structure — heavy lifting.' },
-    ],
-  },
-  {
-    id: 'dijkstra',
-    tab: 'Dijkstra',
-    title: '03 · Njia fupi zaidi',
-    stamp: '0:30 – 0:42',
-    Component: DijkstraScene,
-    lines: [
-      { t: 0, text: 'Umepata dereva. Sasa — njia ya haraka kutoka Mwenge hadi Kariakoo.' },
-      { t: 2.4, text: "Dijkstra's algorithm inasambaa kutoka kwako kama mawimbi…" },
-      { t: 5.4, text: '…ikipima kila barabara kwa cost yake.' },
-      { t: 7.5, text: 'Ina-lock njia rahisi zaidi — hata foleni ya Ubungo inaepukwa.' },
-      { t: 10.2, text: 'Algorithm ile ile wanayokuuliza kwenye Google interviews.' },
-    ],
-  },
-  {
-    id: 'sort',
-    tab: 'Sorting',
-    title: '04 · Sort, chagua, nauli',
-    stamp: '0:42 – 0:52',
-    Component: SortScene,
-    lines: [
-      { t: 0, text: 'Madereva 12 wako area yako. Nani ata-take ride?' },
-      { t: 2.9, text: 'Wana-sort-iwa kwa ETA — nani atafika kwanza.' },
-      { t: 5.5, text: 'Frank Abeid na boda yake — best match, locked.' },
-      { t: 6.6, text: 'Nauli imeshapigwa hesabu kabla hujapepesa macho.' },
-      { t: 8.7, text: "Graphs, grids, sorting, shortest path. Hiyo ndiyo DSA." },
-    ],
-  },
-  {
-    id: 'payoff',
-    tab: 'Payoff',
-    title: '05 · Ride ya nyumbani',
-    stamp: '0:52 – 1:00',
-    Component: PayoffScene,
-    lines: [
-      { t: 0, text: 'Dereva anakuja — algorithm imemaliza kazi yake.' },
-      { t: 2.8, text: 'Kila app unayotumia — Bolt, IG, M-Pesa — ni DSA ndani.' },
-      { t: 5.8, text: 'DSA si theory. Ni ride yako ya kwenda nyumbani.' },
-      { t: 7.6, text: 'Follow kwa breakdown mpya kila wiki.' },
+      { t: 0, text: 'Algorithms zinazotumika hapa ni spatial indexing — R-Tree, Geohash, na H3 ambayo Uber wanatumia.' },
+      { t: 4.2, text: 'Like, follow, share na save kwa Part 2.' },
     ],
   },
 ]
