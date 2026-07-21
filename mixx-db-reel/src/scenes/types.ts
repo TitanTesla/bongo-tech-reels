@@ -23,11 +23,11 @@ export interface SceneDef {
   Component: FC<SceneProps>
 }
 
-/** Mixx by Yas yellow — the primary accent on the pure-black canvas. */
+/** Money — balances, TZS amounts, anything the viewer thinks of as cash. */
 export const ACCENT = '#ffcc00'
-/** Tigo-heritage blue — Mixx by Yas secondary accent (network, structure, metadata). */
+/** Data — tables, rows, structure, the database itself. */
 export const BLUE = '#3b8bff'
-/** For the "BILA X" contrast halves — the world without the concept. */
+/** The myth being broken, and the breach in the punchline scene. */
 export const DANGER = '#ff5f5f'
 export const INK = '#e8e8e8'
 export const FAINT = '#3a3a3a'

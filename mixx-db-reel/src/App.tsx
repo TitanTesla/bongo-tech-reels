@@ -166,10 +166,10 @@ export default function App() {
       {/* header */}
       <header className="flex items-center justify-between border-b border-[#161616] px-6 py-3">
         <h1 className="font-mono text-[12px] font-bold tracking-[0.3em] text-white">
-          MIXX BY YAS <span style={{ color: ACCENT }}>×</span> <span style={{ color: BLUE }}>DB</span>
+          TIGO PESA <span style={{ color: ACCENT }}>×</span> <span style={{ color: BLUE }}>DATABASE</span>
         </h1>
         <div className="flex items-center gap-4">
-          <p className="font-mono text-[10px] tracking-[0.2em] text-[#555]">REEL STUDIO · 60S · EP. 2</p>
+          <p className="font-mono text-[10px] tracking-[0.2em] text-[#555]">REEL STUDIO · EP. 2</p>
           <button
             onClick={() => {
               const url = new URL(window.location.href)
