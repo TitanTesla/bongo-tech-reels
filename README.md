@@ -19,7 +19,7 @@ Each folder is a self-contained **Reel Studio**: a browser app that maps every c
 | # | Project | Teaches | Story hook |
 | - | ------- | ------- | ---------- |
 | 1 | [`bolt-dsa-reel`](bolt-dsa-reel/) | Data structures & algorithms | How Bolt finds you a ride at Mwenge |
-| 2 | [`mixx-db-reel`](mixx-db-reel/) | Databases | Sending TZS 50,000 on Mixx by Yas — nothing "travels" |
+| 2 | [`mixx-db-reel`](mixx-db-reel/) | Databases | No box of cash sits at Tigo with your name on it — so what *is* a database? |
 | 3 | [`mobile-app-dev-reel`](mobile-app-dev-reel/) | Offline-first mobile app dev | WhatsApp works fine on airplane mode — where did the message go? |
 
 Each project has its own README with the full breakdown; `script.md` in each folder holds the complete voice-over script and shot notes.

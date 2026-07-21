@@ -80,7 +80,7 @@ bolt-dsa-reel/
 
 - [ ] Auto-advance: play all six scenes as one continuous 60-second take
 - [ ] Record mode: fullscreen phone frame only, for clean screen capture
-- [ ] Ep. 2 — `mixx-db-reel`: the database secrets behind Mixx by Yas transfers
+- [ ] Ep. 2 — `mixx-db-reel`: what a database actually is, from your Tigo Pesa balance to your NIDA
 
 ## 👤 Author
 

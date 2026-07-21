@@ -1,4 +1,4 @@
-# Mixx DB Reel — VO Script (final)
+# Database — VO Script (final)
 
 * Ukiweka 3,000 Tigo Pesa afu ukaenda kuangalia balance yako kwenye app. Jua kwamba hakuna sehemu kwenye ofisi za Tigo ambapo kuna kisanduku chenye pesa zako in cash.
 * Najua hio ni common sense but what if nkikwambia kwamba unapomtumia mtu pesa hakuna actually unachotuma? Kinachofanyika ni kwamba database ina update number kwenye account mbili tofauti.

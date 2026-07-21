@@ -1,8 +1,8 @@
 <div align="center">
 
-# 📲 Mixx by Yas × DB — Reel Studio (Ep. 2)
+# 🗄️ Tigo Pesa × Database — Reel Studio (Ep. 2)
 
-**A 60-second TikTok/Reels storyboard that reveals the surprising secrets of databases through how Mixx by Yas moves money in Dar es Salaam.**
+**A TikTok/Reels storyboard that answers the question nobody asks until it's too late: what actually *is* a database — starting with the TZS you just sent on Tigo Pesa.**
 
 `React` · `TypeScript` · `Vite` · `GSAP` · `Framer Motion` · `Tailwind CSS`
 
@@ -12,22 +12,24 @@
 
 ## 📌 Overview
 
-Episode 2 of the reel series. Same Reel Studio format as [bolt-dsa-reel](../bolt-dsa-reel/): each database concept is a **tab**, the voice-over **script sits off-canvas** and highlights line-by-line in sync with the animation, and the canvas stays inside the phone-safe area so nothing hides behind TikTok or Instagram UI.
+Episode 2 of the reel series. Same Reel Studio format as [bolt-dsa-reel](../bolt-dsa-reel/): each idea is a **tab**, the voice-over **script sits off-canvas** and highlights line-by-line in sync with the animation, and the canvas stays inside the phone-safe area so nothing hides behind TikTok or Instagram UI.
 
-**The story:** you send TZS 50,000 on Mixx by Yas and the network drops at Ubungo mid-transfer — yet not a shilingi gets lost. Because nothing ever "travels": ledgers, atomic transactions, indexes, and soft deletes did the work.
+**The story:** you put TZS 3,000 on Tigo Pesa and check your balance — there's no box of cash in a Tigo office with your name on it. Send some to a friend and nothing actually travels: a database just edits two numbers. From there the reel zooms out — your phone number, your NIDA, your WhatsApp chats, your photos are all sitting in a database *somewhere*, at home or abroad — and lands on the question people actually ask: when a database has to hold something specific, which *kind* does it reach for? Document, relational, or vector?
+
+> **Status:** [`script.md`](script.md) is final. The animations in `src/scenes/` predate it — the studio runs, but what it renders doesn't match the script yet. Rebuilding them is the next piece of work.
 
 ## ✨ Features
 
-- 🎬 **Six scripted scenes** — Hook · Ledger · Atomicity · Index · Delete-is-a-lie · Payoff, each a hand-built GSAP timeline
+- 🎬 **Scene-per-beat architecture** — every beat of the script is its own hand-built GSAP timeline, all registered in one place *(scenes pending rebuild against the final script)*
 - 📱 **Phone-safe canvas** — 9:16 frame with TikTok/Reels chrome zones; pure-black, no gradients, no stock assets
 - 📝 **Synced script panel** — Gen-Z Swahili/English VO lines highlight as the animation plays; click any line to seek
-- 📲 **Dar es Salaam world** — Mixx by Yas wallet framing, TZS amounts, real Tanzanian names, mangi's debt notebook as the ledger metaphor
-- ⏯️ **Transport controls** — play/pause, restart, scrubbable progress bar for rehearsing VO timing
+- 🎥 **REC mode** — canvas-only capture view (`?rec=1`) that strips the UI and auto-chains every scene into one continuous take; point an OBS Browser Source at it for native 4K portrait, no cropping
+- ⏯️ **Transport controls** — play/pause, restart, mute, scrubbable progress bar, plus keyboard shortcuts (space/R/←→/M/F/S) reachable from OBS's Interact window
 
 ## 🖥️ Tech Stack
 
 | Layer       | Tool                        | Why                                       |
-| ----------- | --------------------------- | ----------------------------------------- |
+| ----------- | --------------------------- | ------------------------------------------ |
 | Framework   | React 19 + TypeScript       | Component-per-scene architecture          |
 | Build       | Vite 8                      | Instant dev server + HMR                  |
 | Animation   | GSAP 3 (+ MotionPathPlugin) | Scripted, scrubbed, timeline-based motion |
@@ -44,7 +46,7 @@ Episode 2 of the reel series. Same Reel Studio format as [bolt-dsa-reel](../bolt
 npm install
 
 # develop
-npm run dev        # → http://localhost:5173
+npm run dev        # → http://localhost:5174
 
 # ship
 npm run build      # type-checks + bundles to dist/
@@ -56,18 +58,16 @@ npm run preview    # serve the production build
 ```
 mixx-db-reel/
 ├── src/
-│   ├── App.tsx               # layout: tabs · phone canvas · script panel · transport
+│   ├── App.tsx               # layout: tabs · phone canvas · script panel · transport · REC mode
 │   ├── data/
 │   │   └── ledger.ts         # shared wallet ledger rows, accounts, transaction states
+│   ├── audio/
+│   │   └── sfx.ts            # procedural Web Audio SFX — no audio assets
 │   ├── scenes/
 │   │   ├── index.ts          # scene registry + VO script (timestamped lines)
 │   │   ├── types.ts          # SceneDef contract, palette constants
-│   │   └── *Scene.tsx        # one GSAP timeline per concept
-│   └── components/
-│       ├── LedgerTable.tsx   # animatable database-table / notebook rows
-│       ├── MoneyOrb.tsx      # the TZS 50,000 in flight (commit / rollback states)
-│       └── PhoneChrome.tsx   # faint TikTok/Reels UI (safe-zone framing)
-├── script.md                 # the full 60-second VO script + shot notes
+│   │   └── *Scene.tsx        # one GSAP timeline per beat — pending rebuild
+├── script.md                 # the final VO script — the general "what is a database" narrative
 └── README.md
 ```
 
@@ -75,14 +75,17 @@ mixx-db-reel/
 
 1. Every scene builds a **paused GSAP timeline** inside a `gsap.context` and hands it to the app shell.
 2. The shell drives play/pause/seek and, on every tick, maps `timeline.time()` to the active script line.
-3. All scenes share one **wallet ledger dataset** (`data/ledger.ts`), so the reel feels like one continuous story instead of six clips.
+3. All scenes share one **wallet ledger dataset** (`data/ledger.ts`), so the reel feels like one continuous story instead of separate clips.
+4. **REC mode** (`?rec=1`) renders the canvas alone and auto-advances scene to scene for a single unbroken take — built for an OBS Browser Source at 2160×3840.
 
 ## 🗺️ Roadmap
 
 - [x] Scaffold the Vite + GSAP shell (reused the bolt-dsa-reel app shell)
-- [x] Build the six scenes from [script.md](script.md)
-- [ ] Record mode: fullscreen phone frame only, for clean screen capture
-- [ ] Ep. 3 — how your password stays secret (hashing, not storage)
+- [x] Build the first pass of scenes on top of the shell
+- [x] REC mode for clean 4K capture
+- [x] Finalize the VO script — broadened from a single-app deep dive into a general, layman-friendly "what is a database" narrative
+- [ ] Rebuild the scenes to match the final script
+- [ ] Refresh the studio's on-screen title/header to match the new framing
 
 ## 👤 Author
 
